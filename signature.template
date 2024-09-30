@@ -1,0 +1,9 @@
+{
+  "algorithm": {
+    "hash": "sha512",
+    "encryption": "EdDSA"
+  },
+  "value":
+    "xxxx",
+  "signer": "self"
+}

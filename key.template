@@ -1,0 +1,7 @@
+{
+  "algorithm": "EdDSA",
+  "key": "xxxxxxxxx",
+  "parameters": {
+    "scheme": "Ed25519"
+  }
+}
