@@ -2,7 +2,7 @@ import fs from "fs";
 import canonicalize from "canonicalize";
 import elliptic from "elliptic";
 
-const userKeyPath = "./jackla_test/";
+const userKeyPath = "./user/";
 const nodeKeyPath = "./node/";
 
 //signature template:

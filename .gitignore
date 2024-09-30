@@ -1,0 +1,19 @@
+# Ignore all JSON files in specific directories
+intm/*.json
+root/*.json
+user/*.json
+
+# Keep empty directories
+!/**/.gitkeep
+
+# Ignore node directory
+node/
+
+# Ignore node_modules directory
+node_modules/
+
+# Ignore package-lock.json file
+package-lock.json
+
+# Ignore package.json file
+package.json
