@@ -5,15 +5,15 @@
     "main": "index.js",
     "type": "module",
     "scripts": {
-        "setup": "npm run genkeys && npm run create-root-cert && npm run sign-root-cert && npm run create-user-cert && npm run sign-user-cert && npm run create-node-desc && npm run sign-node-desc",
-        "genkeys": "node genkeys.mjs",
-        "create-root-cert": "node createRootCert.mjs",
-        "sign-root-cert": "node signRootSelfCert.mjs",
-        "create-user-cert": "node createUserCert.mjs",
-        "sign-user-cert": "node signUserCert.mjs",
-        "create-node-desc": "node createNodeDesc.mjs",
-        "sign-node-desc": "node signNodeDesc.mjs",
-        "cleanup": "node cleanup.mjs"
+        "setup": "cd scripts && npm run genkeys && npm run create-root-cert && npm run sign-root-cert && npm run create-user-cert && npm run sign-user-cert && npm run create-node-desc && npm run sign-node-desc && cd ..",
+        "genkeys": "node ./scripts/genkeys.mjs",
+        "create-root-cert": "node ./scripts/createRootCert.mjs",
+        "sign-root-cert": "node ./scripts/signRootSelfCert.mjs",
+        "create-user-cert": "node ./scripts/createUserCert.mjs",
+        "sign-user-cert": "node ./scripts/signUserCert.mjs",
+        "create-node-desc": "node ./scripts/createNodeDesc.mjs",
+        "sign-node-desc": "node ./scripts/signNodeDesc.mjs",
+        "cleanup": "node ./scripts/cleanup.mjs"
     },
     "keywords": [
         "golem",
