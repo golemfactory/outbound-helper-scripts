@@ -1,0 +1,31 @@
+{
+    "name": "golem-network-certificate-manager",
+    "version": "1.0.0",
+    "description": "Certificate and Node Descriptor Manager for Golem Network",
+    "main": "index.js",
+    "type": "module",
+    "scripts": {
+        "setup": "npm run genkeys && npm run create-root-cert && npm run sign-root-cert && npm run create-user-cert && npm run sign-user-cert && npm run create-node-desc && npm run sign-node-desc",
+        "genkeys": "node genkeys.mjs",
+        "create-root-cert": "node createRootCert.mjs",
+        "sign-root-cert": "node signRootSelfCert.mjs",
+        "create-user-cert": "node createUserCert.mjs",
+        "sign-user-cert": "node signUserCert.mjs",
+        "create-node-desc": "node createNodeDesc.mjs",
+        "sign-node-desc": "node signNodeDesc.mjs",
+        "cleanup": "node cleanup.mjs"
+    },
+    "keywords": [
+        "golem",
+        "network",
+        "certificate",
+        "node-descriptor"
+    ],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "canonicalize": "^1.0.5",
+        "dotenv": "^16.0.3",
+        "elliptic": "^6.5.4"
+    }
+}

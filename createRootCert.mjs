@@ -1,35 +1,37 @@
 import fs from "fs"
+import path from "path"
 
-const rootKeyPath = "./root/"
+import { directories, templateFiles, outputFiles, certConfig } from "./config.mjs"
 
-const filename = "cert.template"
+const rootCertPath = directories.certificates.root
+const rootKeyPath = path.join(directories.keys, 'root')
+
+// Create directories if they don't exist
+fs.mkdirSync(rootCertPath, { recursive: true })
+fs.mkdirSync(rootKeyPath, { recursive: true })
+
 console.log("Reading certificate template from file")
-
-const certificate_template = fs.readFileSync(filename)
+const certificate_template = fs.readFileSync(templateFiles.certificate)
 const cert = JSON.parse(certificate_template)
 
 const today = new Date(new Date().setUTCHours(0, 0, 0, 0))
 
 cert.certificate.validityPeriod.notBefore = today.toISOString().split(".").shift() + "Z"
-cert.certificate.validityPeriod.notAfter = new Date(today.setMonth(today.getMonth() + 3)).toISOString().split(".").shift() + "Z"
+cert.certificate.validityPeriod.notAfter =
+    new Date(today.setMonth(today.getMonth() + certConfig.validityPeriod.root)).toISOString().split(".").shift() + "Z"
 
-cert.certificate.keyUsage = "all"
-cert.certificate.permissions = "all"
-cert.certificate.subject = {
-    displayName: "Crypd",
-    contact: {
-        email: "crypd@somedomain.com",
-    },
-}
+cert.certificate.keyUsage = certConfig.keyUsage.root
+cert.certificate.permissions = certConfig.permissions.root
+cert.certificate.subject = certConfig.subject.root
 
-let data = fs.readFileSync(rootKeyPath + "root.pub.json")
+let data = fs.readFileSync(path.join(rootKeyPath, "root.pub.json"))
 let pubkey = JSON.parse(data)
 
 cert.certificate.publicKey = pubkey
 
-fs.writeFileSync(rootKeyPath + "root_self_cert.json", JSON.stringify(cert))
+fs.writeFileSync(path.join(rootCertPath, outputFiles.rootSelfCert), JSON.stringify(cert))
 
-console.log("Certificate crs saved")
+console.log("Certificate csr saved")
 /*
 {
   "$schema": "https://schemas.golem.network/v1/certificate.schema.json",

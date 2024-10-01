@@ -1,73 +1,33 @@
-import fs from "fs";
+import fs from "fs"
+import path from "path"
+import { directories, templateFiles, outputFiles, certConfig } from "./config.mjs"
 
-const userKeyPath = "./user/";
+const userCertPath = directories.certificates.user
+const userKeyPath = path.join(directories.keys, 'user')
 
-const filename = "cert.template";
-console.log("Reading certificate from file");
+// Create directories if they don't exist
+fs.mkdirSync(userCertPath, { recursive: true })
+fs.mkdirSync(userKeyPath, { recursive: true })
 
-const certificate_template = fs.readFileSync(filename);
-const cert = JSON.parse(certificate_template);
+console.log("Reading certificate from file")
+const certificate_template = fs.readFileSync(templateFiles.certificate)
+const cert = JSON.parse(certificate_template)
 
-const today = new Date(new Date().setUTCHours(0, 0, 0, 0));
+const today = new Date(new Date().setUTCHours(0, 0, 0, 0))
 
-cert.certificate.validityPeriod.notBefore =
-  today.toISOString().split(".").shift() + "Z";
+cert.certificate.validityPeriod.notBefore = today.toISOString().split(".").shift() + "Z"
 cert.certificate.validityPeriod.notAfter =
-  new Date(today.setMonth(today.getMonth() + 2))
-    .toISOString()
-    .split(".")
-    .shift() + "Z";
+    new Date(today.setMonth(today.getMonth() + certConfig.validityPeriod.user)).toISOString().split(".").shift() + "Z"
 
-cert.certificate.keyUsage = ["signNode"];
+cert.certificate.keyUsage = certConfig.keyUsage.user
+cert.certificate.permissions = certConfig.permissions.user
+cert.certificate.subject = certConfig.subject.user
 
-cert.certificate.permissions = {
-  outbound: {
-    urls: ["https://www.gazeta.pl", "https://ipfs.io"],
-  },
-};
-cert.certificate.subject = {
-  displayName: "Jackla User",
-  contact: {
-    email: "jacek@golem.network",
-  },
-};
+let data = fs.readFileSync(path.join(userKeyPath, "user.pub.json"))
+let pubkey = JSON.parse(data)
 
-let data = fs.readFileSync(userKeyPath + "user.pub.json");
-let pubkey = JSON.parse(data);
+cert.certificate.publicKey = pubkey
 
-cert.certificate.publicKey = pubkey;
+fs.writeFileSync(path.join(userCertPath, outputFiles.userCert), JSON.stringify(cert))
 
-fs.writeFileSync(userKeyPath + "user_cert.json", JSON.stringify(cert));
-
-console.log("User certificate crs saved");
-
-/*
-{
-  "$schema": "https://schemas.golem.network/v1/certificate.schema.json",
-  "certificate": {
-    "validityPeriod": {
-      "notBefore": "2023-01-01T00:00:00Z",
-      "notAfter": "2025-01-01T00:00:00Z"
-    },
-    "keyUsage": [
-      "signNode"
-    ],
-    "permissions": {
-      "outbound": "unrestricted"
-    },
-    "subject": {
-      "displayName": "Example leaf cert",
-      "contact": {
-        "email": "example@leaf.tld"
-      }
-    },
-    "publicKey": {
-      "algorithm": "EdDSA",
-      "key": "c6cd286a2474d13ffc8dcd417a446df461751a78dec46d039603ca53a373ac52",
-      "parameters": {
-        "scheme": "Ed25519"
-      }
-    }
-  }
-}
-*/
+console.log("User certificate csr saved")

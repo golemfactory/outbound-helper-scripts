@@ -1,34 +1,30 @@
-import fs from "fs";
+import fs from "fs"
+import path from "path"
+import { directories, templateFiles, outputFiles, nodeDescriptorConfig } from "./config.mjs"
 
-const nodeKeyPath = "./node/";
+const nodeKeyPath = directories.nodeDescriptors
 
-const filename = "ndesct.template";
-console.log("Reading node description template from file");
+// Create the directory if it doesn't exist
+if (!fs.existsSync(nodeKeyPath)) {
+  console.log(`Creating directory: ${nodeKeyPath}`)
+  fs.mkdirSync(nodeKeyPath, { recursive: true })
+}
 
-const node_desc_template = fs.readFileSync(filename);
-const desc = JSON.parse(node_desc_template);
+console.log("Reading node description template from file")
+const node_desc_template = fs.readFileSync(templateFiles.nodeDescriptor)
+const desc = JSON.parse(node_desc_template)
 
-const today = new Date(new Date().setUTCHours(0, 0, 0, 0));
+const today = new Date(new Date().setUTCHours(0, 0, 0, 0))
 
-desc.nodeDescriptor.validityPeriod.notBefore =
-  today.toISOString().split(".").shift() + "Z";
-desc.nodeDescriptor.validityPeriod.notAfter =
-  new Date(today.setMonth(today.getMonth() + 1))
-    .toISOString()
-    .split(".")
-    .shift() + "Z";
+desc.nodeDescriptor.validityPeriod.notBefore = today.toISOString().split(".").shift() + "Z"
+desc.nodeDescriptor.validityPeriod.notAfter = new Date(today.setMonth(today.getMonth() + 1)).toISOString().split(".").shift() + "Z"
 
-desc.nodeDescriptor.nodeId = "0xb605b8e1afa10179fc27a06f0c9ba9a226f39a50";
+desc.nodeDescriptor.nodeId = nodeDescriptorConfig.nodeId
+desc.nodeDescriptor.permissions = nodeDescriptorConfig.permissions
 
-desc.nodeDescriptor.permissions = {
-  outbound: {
-    urls: ["https://ipfs.io"],
-  },
-};
+fs.writeFileSync(path.join(nodeKeyPath, outputFiles.nodeDescriptor), JSON.stringify(desc))
 
-fs.writeFileSync(nodeKeyPath + "node_desc.json", JSON.stringify(desc));
-
-console.log("Node descriptor saved");
+console.log("Node descriptor saved")
 
 /*
 {

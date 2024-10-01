@@ -1,0 +1,11 @@
+node_modules
+
+# Generated keys and certificates
+/keys
+/certificates
+
+# Node descriptors
+/node-descriptors
+package-lock.json
+
+
